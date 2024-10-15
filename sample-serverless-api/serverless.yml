@@ -17,3 +17,10 @@ functions:
       - http:
           method: ANY
           path: '{proxy+}'
+
+custom:
+  serverless-offline:
+    httpPort: 4000
+    websocketPort: 4001
+    lambdaPort: 4002
+    albPort: 4003
