@@ -1,9 +1,9 @@
 # compiled output
+**/.git
+**/.git/
 **dist
 **node_modules
 **build
-**/.git
-**/.git/
 # Logs
 logs
 *.log
@@ -56,5 +56,4 @@ pids
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
-**/.git
-path/to/subfolder/.git
+#path/to/subfolder/.git
