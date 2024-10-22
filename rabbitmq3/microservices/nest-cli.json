@@ -41,7 +41,7 @@
       "type": "application",
       "root": "apps/ms-c-orders",
       "entryFile": "main",
-      "sourceRoot": "apps/mms-c-orders/src",
+      "sourceRoot": "apps/ms-c-orders/src",
       "compilerOptions": {
         "tsConfigPath": "apps/ms-c-orders/tsconfig.app.json"
       }
