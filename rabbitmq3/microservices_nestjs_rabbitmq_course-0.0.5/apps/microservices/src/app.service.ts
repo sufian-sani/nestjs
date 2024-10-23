@@ -5,13 +5,15 @@ import { Injectable } from '@nestjs/common';
 export class AppService {
   constructor(
     private readonly amqpConnection: AmqpConnection,
-  ) {
-    //
-  }
+  ) {}
+  async checkStock() {
+    await this.amqpConnection.publish('stock', 'stock-route', {
+      type: 'check_stock',
+    });
 
-  async checkStock(itemName, quantity) {
-    await this.amqpConnection.publish('stock', 'stock-route', { data: { itemName, quantity } });
-    console.log('msg published', 'stock', 'stock-route', { data: { itemName, quantity } });
+
+    // await this.amqpConnection.publish('stock', 'stock-route', { data: { itemName, quantity } });
+    // console.log('msg published', 'stock', 'stock-route', { data: { itemName, quantity } });
   }
 
   async createOrder(customerName, itemName, quantity) {
@@ -27,5 +29,10 @@ export class AppService {
   async createStock(stockId, quantity, name) {
     await this.amqpConnection.publish('stock', 'stock-route', { type: 'create_stock', data: { stockId, quantity, name } }, {});
     console.log('msg published', 'stock', 'stock-route', { type: 'create_stock', data: { stockId, quantity, name } });
+  }
+
+  // Function to generate a unique correlation ID
+  private generateCorrelationId() {
+    return Math.random().toString(36).substr(2, 9);
   }
 }
