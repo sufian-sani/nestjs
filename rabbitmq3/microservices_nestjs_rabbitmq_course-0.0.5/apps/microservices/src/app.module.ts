@@ -2,6 +2,7 @@ import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { Module, DynamicModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { StockConsumerService } from './Responservice/stock-consumer.service';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { AppService } from './app.service';
     }) as DynamicModule,  // <---- Explicit type cast
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, StockConsumerService],
 })
 export class AppModule {}
