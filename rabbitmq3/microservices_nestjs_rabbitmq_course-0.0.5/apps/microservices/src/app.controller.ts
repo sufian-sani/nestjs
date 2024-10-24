@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import {Controller, Get, Param} from '@nestjs/common';
 import { AppService } from './app.service';
 import { v4 as uuid } from 'uuid';
 import {EventPattern, MessagePattern} from '@nestjs/microservices';
@@ -14,15 +14,9 @@ export class AppController {
     await this.appService.checkStock();
   }
 
-  // @MessagePattern('check_stock')
-  // async handleStockResponse(data: any) {
-  //   console.log('Received stock data:', data);
-  //   // Process the received stock data as needed
-  // }
-
   @Get('order')
   async createOrder() {
-    await this.appService.createOrder('jaffa-cake-monster', 'jaffa-cake', 1);
+    await this.appService.createOrder('7333a918-8f49-4231-ae6b-87f76e074fd9', 1);
   }
 
   @Get('check-delivery')
