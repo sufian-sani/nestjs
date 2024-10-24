@@ -4,6 +4,7 @@ import { MsAStockService } from './ms-a-stock.service';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { databaseProviders } from './ms-a-stock.database.provider';
 import { modelProviders } from './ms-a-stock.model.provider';
+import {StockCheckService} from "./aliceservice/check-product-stock.service";
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { modelProviders } from './ms-a-stock.model.provider';
   controllers: [MsAStockController],
   providers: [
     MsAStockService,
+    StockCheckService,
     ...databaseProviders,
     ...modelProviders,
   ],

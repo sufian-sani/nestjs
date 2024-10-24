@@ -4,6 +4,7 @@ import { MsCOrdersController } from './ms-c-orders.controller';
 import { databaseProviders } from './ms-c-orders.database.provider';
 import { MsCOrdersService } from './ms-c-orders.service';
 import {modelProviders} from "./ms-c-orders.model.provider";
+import {StockCheckByServiceService} from "./aliceservice/productstock-check.service";
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import {modelProviders} from "./ms-c-orders.model.provider";
   controllers: [MsCOrdersController],
   providers: [
     MsCOrdersService,
+    StockCheckByServiceService,
     ...databaseProviders,
     ...modelProviders,
   ],
