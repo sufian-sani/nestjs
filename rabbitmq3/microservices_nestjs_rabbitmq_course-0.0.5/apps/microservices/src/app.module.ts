@@ -11,6 +11,7 @@ import { StockConsumerService } from './Responservice/stock-consumer.service';
         { name: 'orders', type: 'topic' },
         { name: 'stock', type: 'topic' },
         { name: 'delivery', type: 'topic' },
+        { name: 'stock-product', type: 'topic' },
       ],
       uri: 'amqp://localhost:5672',
     }) as DynamicModule,  // <---- Explicit type cast

@@ -16,7 +16,7 @@ export class AppController {
 
   @Get('order')
   async createOrder() {
-    await this.appService.createOrder('7333a918-8f49-4231-ae6b-87f76e074fd9', 1);
+    await this.appService.createOrder('ca2b39a3-b7b1-4181-a56f-905a6c11aaef', 1);
   }
 
   @Get('check-delivery')
@@ -26,6 +26,6 @@ export class AppController {
 
   @Get('create-stock')
   async createStock() {
-    await this.appService.createStock(uuid(), 9, 'new item 2');
+    await this.appService.createStock(uuid(), 0, 'new item 45');
   }
 }

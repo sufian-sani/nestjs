@@ -7,6 +7,7 @@ export const databaseProviders = [
             mongoose.connect('mongodb://localhost:27017/stock',{
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
+                useFindAndModify: false,
             }),
     },
 ];
