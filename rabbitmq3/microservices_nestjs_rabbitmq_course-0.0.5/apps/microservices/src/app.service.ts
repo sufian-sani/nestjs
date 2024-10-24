@@ -11,14 +11,13 @@ export class AppService {
       type: 'check_stock',
     });
 
-
     // await this.amqpConnection.publish('stock', 'stock-route', { data: { itemName, quantity } });
     // console.log('msg published', 'stock', 'stock-route', { data: { itemName, quantity } });
   }
 
-  async createOrder(customerName, itemName, quantity) {
-    await this.amqpConnection.publish('orders', 'orders-route', { data: { customerName, itemName, quantity } });
-    console.log('msg published', 'orders', 'orders-route', { data: { customerName, itemName, quantity } });
+  async createOrder(itemId, quantity) {
+    await this.amqpConnection.publish('orders', 'orders-route', { type: 'create_order', data: { itemId, quantity } });
+    console.log('msg published', 'orders', 'orders-route', { data: { itemId, quantity } });
   }
 
   async checkDelivery(customerName) {

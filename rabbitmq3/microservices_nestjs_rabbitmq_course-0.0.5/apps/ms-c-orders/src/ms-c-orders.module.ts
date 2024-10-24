@@ -3,6 +3,7 @@ import { Module, DynamicModule } from '@nestjs/common';
 import { MsCOrdersController } from './ms-c-orders.controller';
 import { databaseProviders } from './ms-c-orders.database.provider';
 import { MsCOrdersService } from './ms-c-orders.service';
+import {modelProviders} from "./ms-c-orders.model.provider";
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MsCOrdersService } from './ms-c-orders.service';
   providers: [
     MsCOrdersService,
     ...databaseProviders,
+    ...modelProviders,
   ],
 })
 export class MsCOrdersModule { }
