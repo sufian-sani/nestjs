@@ -15,10 +15,9 @@ export class StockCheckByServiceService {
         queue: 'stock-product-queue', // Ensure the queue name is unique for this consumer
     })
     async handleStockProductMessageSend(msg: any) {
-        // console.log(msg)
-        const stockAvailabilityResponse = await this.amqpConnection.publish('stock-product', 'stock-product-route', {
+        await this.amqpConnection.publish('stock-product', 'stock-product-route', {
           type: 'check_stock_by_id',
-            msg// Send the stock data as the message payload
+            data: msg
         });
 
         // switch (msg.type) {
@@ -29,7 +28,7 @@ export class StockCheckByServiceService {
         //         console.log('Unknown message type');
         // }
 
-        return stockAvailabilityResponse
+        // return stockAvailabilityResponse
         // switch (msg.type) {
         //     case 'check_product_stock_availability':
         //         console.log('check_product_stock_availability')
@@ -46,18 +45,23 @@ export class StockCheckByServiceService {
         //     console.log('Stock data:', msg.stocks); // Process the stock data
         // }
     }
-    // async handleStockProductGetMessage(msg: any) {
+    // async handleStockProductGetMessage(data: any) {
     //     // Your existing logic
-    //     switch (msg.type) {
-    //         case 'check_product_stock_availability':
-    //             console.log('sdjsljdlsjdl')
-    //             // await this.createStock(msg.data);
-    //             break;
-    //         // Other cases
-    //         default:
-    //             // default
+    //     if (data.type === 'check_product_stock_availability') {
+    //         console.log('Stock data:', data, 'seen from c'); // Process the stock data
     //     }
-        // if (msg.type === 'check_product_stock_availability') {
-        //     console.log('Stock data:', msg); // Process the stock data
-        // }
+    //     return true;
+    //     // switch (msg.type) {
+    //     //     case 'check_product_stock_availability':
+    //     //         console.log('sdjsljdlsjdl')
+    //     //         // await this.createStock(msg.data);
+    //     //         break;
+    //     //     // Other cases
+    //     //     default:
+    //     //     // default
+    //     // }
+    //     // if (msg.type === 'check_product_stock_availability') {
+    //     //     console.log('Stock data:', msg); // Process the stock data
+    //     // }
+    // }
 }

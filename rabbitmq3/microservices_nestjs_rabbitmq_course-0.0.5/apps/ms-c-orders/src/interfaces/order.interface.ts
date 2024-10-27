@@ -6,4 +6,5 @@ export interface Order extends Document {
   // readonly items: any[];
   readonly itemId: string;
   readonly quantity: number;
+  readonly status: string;
 }

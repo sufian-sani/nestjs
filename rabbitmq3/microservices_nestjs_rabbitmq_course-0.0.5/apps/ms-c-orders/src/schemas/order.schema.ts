@@ -6,4 +6,5 @@ export const OrderSchema = new mongoose.Schema({
   // items: Array, // [{stockId: "guid", qty: 5, name: "Jaffa Cake"}]
   itemId: String,
   quantity: Number,
+  status: { type: String, default: 'pending' }
 });
