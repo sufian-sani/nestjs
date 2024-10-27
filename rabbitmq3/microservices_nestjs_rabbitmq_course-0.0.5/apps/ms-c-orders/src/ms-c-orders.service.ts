@@ -29,9 +29,9 @@ export class MsCOrdersService {
   }
 
   public async createOrder(data) {
-    // console.log('data',data)
-    const stockValue = await this.productStockCheck.handleStockProductMessageSend(data)
-    console.log(stockValue)
+    await this.productStockCheck.handleStockProductMessageSend(data)
+    // return messageConfirmation
+    // console.log(stockValue)
     // await this.amqpConnection.publish('stock', 'stock-route', {
     //   type: 'check_stock_by_id',
     //   data,// Send the stock data as the message payload
