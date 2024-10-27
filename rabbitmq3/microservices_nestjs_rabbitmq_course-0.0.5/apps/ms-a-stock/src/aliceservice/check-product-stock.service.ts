@@ -23,13 +23,13 @@ export class StockCheckService {
         // Check the message type and process accordingly
         try {
             if (data.type === 'check_stock_by_id') {
-                const { itemId, quantity } = data.data.data
+                // const { itemId, quantity } = data.data?.data
+                const { itemId, quantity } = data?.data?.data || data?.data || {};
                 if (!itemId && !quantity) {
                     throw new NotFoundException('error')
                 }
                 console.log(itemId, quantity)
                 const stocks = await this.checkStock(itemId, quantity);
-                // console.log(stocks)
                 if(!stocks) {
                     // console.log('product stock is empty');
                     return this.stockConfirmationMessage.stockConfirmationMessage({ res: false, msg: 'product not available' })
@@ -40,8 +40,6 @@ export class StockCheckService {
                     // }
                     return this.stockConfirmationMessage.stockConfirmationMessage({data: {res: true, data: data.data.data}})
                 }
-                // console.log(itemId, quantity)
-                // console.log('Product Stock data:', msg.stocks); // Process the stock data
             }
         } catch (e) {
             console.log(e)
