@@ -13,12 +13,21 @@ export class StockCheckByServiceService {
         exchange: 'stock-product',
         routingKey: 'stock-product-route',
         queue: 'stock-product-queue', // Ensure the queue name is unique for this consumer
+        allowNonJsonMessages: false,
     })
-    async handleStockProductMessageSend(msg: any) {
-        await this.amqpConnection.publish('stock-product', 'stock-product-route', {
-          type: 'check_stock_by_id',
-            data: msg
-        });
+    async handleStockProductMessageSend(data: any) {
+        try {
+            // console.log('msg',msg)
+            this.amqpConnection.publish('stock-product', 'stock-product-route', {
+                type: 'check_stock_by_id',
+                data
+            });
+            data=null;
+            // console.log('Message cleared:', data);
+        } catch(error) {
+            console.error('Error:', error);
+            throw error;
+        }
 
         // switch (msg.type) {
         //     case 'check_product_stock_availability':
