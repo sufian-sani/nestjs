@@ -28,17 +28,21 @@ export class StockCheckService {
                 if (!itemId && !quantity) {
                     throw new NotFoundException('error')
                 }
-                console.log(itemId, quantity)
+                // console.log(itemId, quantity)
+                const orderItem = {
+                    itemId, quantity
+                }
+                console.log(orderItem)
                 const stocks = await this.checkStock(itemId, quantity);
                 if(!stocks) {
                     // console.log('product stock is empty');
-                    return this.stockConfirmationMessage.stockConfirmationMessage({ res: false, msg: 'product not available' })
+                    return this.stockConfirmationMessage.stockConfirmationMessage({ res: false })
                     // await this.stockConfirmationMessage({ msg: 'product available' })
                 } else {
                     // const orderItem = {
                     //     itemId, quantity
                     // }
-                    return this.stockConfirmationMessage.stockConfirmationMessage({data: {res: true, data: data.data.data}})
+                    return this.stockConfirmationMessage.stockConfirmationMessage({data: {res: true, data: orderItem}})
                 }
             }
         } catch (e) {
