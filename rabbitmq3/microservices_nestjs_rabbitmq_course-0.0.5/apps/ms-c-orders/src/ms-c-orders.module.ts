@@ -6,6 +6,8 @@ import { MsCOrdersService } from './ms-c-orders.service';
 import {modelProviders} from "./ms-c-orders.model.provider";
 import {StockCheckByServiceService} from "./aliceservice/productstock-check.service";
 import {StockCheckResponse} from "./aliceservice/product-stock-confirmation-message";
+import {OrderStatusCheck} from "./aliceservice/order-status-check";
+import {SendOrderDetailsService} from "./aliceservice/send-order-details-service";
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import {StockCheckResponse} from "./aliceservice/product-stock-confirmation-mess
     MsCOrdersService,
     StockCheckByServiceService,
     StockCheckResponse,
+    OrderStatusCheck,
+    SendOrderDetailsService,
     ...databaseProviders,
     ...modelProviders,
   ],
