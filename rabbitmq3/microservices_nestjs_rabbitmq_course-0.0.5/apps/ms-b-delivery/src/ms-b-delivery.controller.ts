@@ -3,5 +3,5 @@ import { MsBDeliveryService } from './ms-b-delivery.service';
 
 @Controller()
 export class MsBDeliveryController {
-  constructor(private readonly msBDeliveryService: MsBDeliveryService) { }
+  constructor(private readonly msBDeliveryService: MsBDeliveryService) {}
 }
