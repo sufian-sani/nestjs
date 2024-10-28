@@ -16,24 +16,29 @@ export class StockCheckResponse {
         queue: 'stock-product-response-route-queue', // Ensure the queue name is unique for this consumer
     })
     async handleStockProductGetMessage(data: any) {
-        // Your existing logic
-        if (data.type === 'check_product_stock_availability') {
-            // console.log('Stock data:', data, 'seen from c'); // Process the stock data
-            if (!data.data.data.data){
-                throw new NotFoundException('Not Found');
+        try {
+            // Your existing logic
+            if (data.type === 'check_product_stock_availability') {
+                let response, productData;
+                if (data.data.data.res !== undefined) {
+                    response = data.data.data.res;
+                    productData = data.data.data.data;
+                }
+                // Check for the second pattern
+                else if (data.data.data.data.res !== undefined) {
+                    response = data.data.data.data.res;
+                    productData = data.data.data.data.data;
+                }
+                console.log(response)
+                if (!response){
+                    throw new NotFoundException('Product Not Found');
+                }
+
+                await new this.orderModel(productData).save();
             }
-            if(!data.data.data.data.res){
-                console.log('product not available');
-            }
-            const orderData=data.data.data.data.data
-            // const {stockId,quantity} = data.data.data.data.data
-            // const orderData = {
-            //     stockId,
-            //     quantity,
-            // };
-            // console.log(orderData);
-            await new this.orderModel(orderData).save();
-            // return data.data.data
+        } catch (error){
+            console.error(error)
         }
+
     }
 }

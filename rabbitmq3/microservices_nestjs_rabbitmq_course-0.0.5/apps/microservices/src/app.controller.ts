@@ -16,16 +16,16 @@ export class AppController {
 
   @Get('order')
   async createOrder() {
-    await this.appService.createOrder('ca2b39a3-b7b1-4181-a56f-905a6c11aaef', 1);
-  }
-
-  @Get('check-delivery')
-  async checkDelivery() {
-    await this.appService.checkDelivery('jaffa-cake-monster');
+    await this.appService.createOrder('ca2b39a3-b7b1-4181-a56f-905a6c11aaef', 4);
   }
 
   @Get('create-stock')
   async createStock() {
     await this.appService.createStock(uuid(), 0, 'new item 45');
+  }
+
+  @Get('check-delivery')
+  async checkDelivery() {
+    await this.appService.checkDelivery('jaffa-cake-monster');
   }
 }
