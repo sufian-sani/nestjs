@@ -2,19 +2,19 @@ import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class StockConsumerService {
+export class AllStockCheckService {
 
     @RabbitSubscribe({
-        exchange: 'stock',
-        routingKey: 'stock-route',
-        queue: 'stock-queue', // Ensure the queue name is unique for this consumer
+        exchange: 'all-stock-response',
+        routingKey: 'all-stock-response-route',
+        queue: 'all-stock-response-route-queue', // Ensure the queue name is unique for this consumer
     })
-    async handleStockMessage(msg: any) {
+    async handleStockMessage(data: any) {
         // console.log('Received stock message:', msg);
 
         // Check the message type and process accordingly
-        if (msg.type === 'check_stock') {
-            console.log('Stock data:', msg.stocks); // Process the stock data
+        if (data.type === 'all-stock-response-type') {
+            console.log('all stock data:', data); // Process the stock data
         }
     }
 }

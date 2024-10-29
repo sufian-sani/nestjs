@@ -1,7 +1,7 @@
 import {Body, Controller, Get, Param} from '@nestjs/common';
 import { AppService } from './app.service';
-import { v4 as uuid } from 'uuid';
-import {EventPattern, MessagePattern} from '@nestjs/microservices';
+// import { v4 as uuid } from 'uuid';
+// import {EventPattern, MessagePattern} from '@nestjs/microservices';
 
 @Controller()
 export class AppController {
@@ -9,19 +9,22 @@ export class AppController {
     private readonly appService: AppService,
   ) {}
 
+  // stock
   @Get('check-stock')
   async checkStock() {
     await this.appService.checkStock();
   }
 
+  @Get('create-stock')
+  async createStock(@Body() body: any) {
+    const { stockId, quantity, name } = body; // Destructure body data
+    // console.log(stockId, quantity, name)
+    await this.appService.createStock(stockId, quantity, name);
+  }
+
   @Get('order')
   async createOrder() {
     await this.appService.createOrder('ca2b39a3-b7b1-4181-a56f-905a6c11aaef', 4);
-  }
-
-  @Get('create-stock')
-  async createStock() {
-    await this.appService.createStock(uuid(), 0, 'new item 45');
   }
 
   @Get('check-delivery')

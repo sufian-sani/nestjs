@@ -7,6 +7,7 @@ import { modelProviders } from './ms-a-stock.model.provider';
 import {StockCheckService} from "./aliceservice/check-product-stock.service";
 import {StockConfirmationMessageService} from "./aliceservice/stock-confirmation-message";
 import {StockBackService} from "./aliceservice/get-stock-back";
+import {AllStockCheck} from "./aliceservice/check-all-product-stock";
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import {StockBackService} from "./aliceservice/get-stock-back";
     StockCheckService,
     StockConfirmationMessageService,
     StockBackService,
+    AllStockCheck,
     ...databaseProviders,
     ...modelProviders,
   ],
