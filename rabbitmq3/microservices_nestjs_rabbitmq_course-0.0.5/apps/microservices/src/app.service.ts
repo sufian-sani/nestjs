@@ -29,4 +29,12 @@ export class AppService {
     await this.amqpConnection.publish('delivery', 'delivery-route', { data: { orderId } });
     console.log('msg published', 'delivery', 'delivery-route', { data: { orderId } });
   }
+
+  async changeDeliveryStatus(orderDeliverId: string, deliver_status: string) {
+    const orderDeliveryDetails = {
+      orderDeliverId, deliver_status
+    }
+    await this.amqpConnection.publish('order-delivery', 'order-delivery-route', { type: 'order-delivery-status', data: { orderDeliveryDetails } });
+    console.log('msg published', 'order-delivery', 'order-delivery-route', { data: orderDeliveryDetails });
+  }
 }

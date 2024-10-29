@@ -1,4 +1,4 @@
-import {Controller, Get, Param} from '@nestjs/common';
+import {Body, Controller, Get, Param} from '@nestjs/common';
 import { AppService } from './app.service';
 import { v4 as uuid } from 'uuid';
 import {EventPattern, MessagePattern} from '@nestjs/microservices';
@@ -27,5 +27,13 @@ export class AppController {
   @Get('check-delivery')
   async checkDelivery() {
     await this.appService.checkDelivery('671f26ed97432a564c910b6c');
+  }
+
+  @Get('change-delivery-status')
+  async changeDeliveryStatus(
+      @Body('deliver_status') deliver_status: string,
+      @Body('orderDeliverId') orderDeliverId: string
+  ) {
+    await this.appService.changeDeliveryStatus(orderDeliverId, deliver_status);
   }
 }

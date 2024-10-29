@@ -6,6 +6,7 @@ import { StatusFromOrderService } from "./aliseservice/check-order-status-from-s
 import {GetOrderInfoFromOrderService} from "./aliseservice/get-order-info-from-order-service";
 import {modelProviders} from "./ms-b-delivery.model.provider";
 import {databaseProviders} from "./ms-b-delivery.database.provider";
+import {OrderDeliveryStatus} from "./aliseservice/get-order-delivery-status";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import {databaseProviders} from "./ms-b-delivery.database.provider";
     MsBDeliveryService,
     StatusFromOrderService,
     GetOrderInfoFromOrderService,
+    OrderDeliveryStatus,
     ...databaseProviders,
       ...modelProviders,
   ],

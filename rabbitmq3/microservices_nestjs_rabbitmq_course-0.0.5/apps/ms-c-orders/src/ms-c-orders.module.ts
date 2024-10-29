@@ -8,6 +8,7 @@ import {StockCheckByServiceService} from "./aliceservice/productstock-check.serv
 import {StockCheckResponse} from "./aliceservice/product-stock-confirmation-message";
 import {OrderStatusCheck} from "./aliceservice/order-status-check";
 import {SendOrderDetailsService} from "./aliceservice/send-order-details-service";
+import {OrderStatusChange} from "./aliceservice/get-order-status-change";
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import {SendOrderDetailsService} from "./aliceservice/send-order-details-service
     StockCheckResponse,
     OrderStatusCheck,
     SendOrderDetailsService,
+    OrderStatusChange,
     ...databaseProviders,
     ...modelProviders,
   ],
