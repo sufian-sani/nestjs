@@ -1,6 +1,7 @@
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { Injectable } from '@nestjs/common';
 
+
 @Injectable()
 export class AppService {
   constructor(
@@ -8,7 +9,8 @@ export class AppService {
   ) {}
 
   // stock
-  async createStock(stockId:string, strQuantity:number, name:string) {
+  async createStock(stockId:string, strQuantitydata:string, name:string) {
+    const strQuantity: string = strQuantitydata
     const quantity = parseInt(strQuantity, 10); // Base 10 conversion
     await this.amqpConnection.publish('stock', 'stock-route', { type: 'create_stock', data: { stockId, quantity, name } }, {});
     console.log('msg published', 'stock', 'stock-route', { type: 'create_stock', data: { stockId, quantity, name } });

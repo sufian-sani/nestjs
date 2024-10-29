@@ -2,17 +2,26 @@ import {Body, Controller, Get, Param} from '@nestjs/common';
 import { AppService } from './app.service';
 // import { v4 as uuid } from 'uuid';
 // import {EventPattern, MessagePattern} from '@nestjs/microservices';
+import {AllStockCheckService} from "./Responservice/stock-consumer.service";
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
+    private readonly allStockCheckService: AllStockCheckService,
   ) {}
 
   // stock
   @Get('check-stock')
   async checkStock() {
     await this.appService.checkStock();
+    await new Promise(resolve => setTimeout(resolve, 100));
+    const allData = await this.allStockCheckService.getStockData()
+    // console.log(all_data)
+    return {
+      status: 'success',
+      data: allData,
+    };
   }
 
   @Get('create-stock')

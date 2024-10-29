@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AllStockCheckService {
+    private stockData: any = null;
 
     @RabbitSubscribe({
         exchange: 'all-stock-response',
@@ -14,7 +15,12 @@ export class AllStockCheckService {
 
         // Check the message type and process accordingly
         if (data.type === 'all-stock-response-type') {
-            console.log('all stock data:', data); // Process the stock data
+            // console.log('all stock data:', data); // Process the stock data
+            this.stockData = data.allStocks;
         }
+    }
+    // Expose the stored data
+    async getStockData() {
+        return this.stockData;
     }
 }
