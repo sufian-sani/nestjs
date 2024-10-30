@@ -42,48 +42,19 @@ export class OrderDeliveryStatus {
                 return 'order delivery status already cancelled, not able to update'
             }
             if(deliver_status==='inprocess'){
-                const updatedDeliveryOrder = await this.deliveryModel.findOneAndUpdate(
-                    orderDeliverId,
-                    { status: deliver_status },
-                    { new: true } // Returns the updated document
-                )
-                if (!updatedDeliveryOrder) {
-                    throw new NotFoundException(`Order with ID ${updatedDeliveryOrder} not found.`);
-                }
+                const updatedDeliveryOrder = await this.handelChangeStatus(orderDeliverId, deliver_status)
                 const { status, orderId } = updatedDeliveryOrder;
                 this.amqpConnection.publish('order-delivery-status-change', 'order-delivery-status-change-route', { type: 'order-status-change', data: { status, orderId } });
-                // await orderDeliver.save();
             } else if(deliver_status==='pending'){
-                const updatedDeliveryOrder = await this.deliveryModel.findOneAndUpdate(
-                    orderDeliverId,
-                    { status: deliver_status },
-                    { new: true } // Returns the updated document
-                )
-                if (!updatedDeliveryOrder) {
-                    throw new NotFoundException(`Order with ID ${updatedDeliveryOrder} not found.`);
-                }
+                const updatedDeliveryOrder = await this.handelChangeStatus(orderDeliverId, deliver_status)
                 const { status, orderId } = updatedDeliveryOrder;
                 this.amqpConnection.publish('order-delivery-status-change', 'order-delivery-status-change-route', { type: 'order-status-change', data: { status, orderId } });
             } else if(deliver_status==='shipped'){
-                const updatedDeliveryOrder = await this.deliveryModel.findOneAndUpdate(
-                    orderDeliverId,
-                    { status: deliver_status },
-                    { new: true } // Returns the updated document
-                )
-                if (!updatedDeliveryOrder) {
-                    throw new NotFoundException(`Order with ID ${updatedDeliveryOrder} not found.`);
-                }
+                const updatedDeliveryOrder = await this.handelChangeStatus(orderDeliverId, deliver_status)
                 const { status, orderId } = updatedDeliveryOrder;
                 this.amqpConnection.publish('order-delivery-status-change', 'order-delivery-status-change-route', { type: 'order-status-change', data: { status, orderId } });
             } else if(deliver_status==='cancelled'){
-                const updatedDeliveryOrder = await this.deliveryModel.findOneAndUpdate(
-                    orderDeliverId,
-                    { status: deliver_status },
-                    { new: true } // Returns the updated document
-                )
-                if (!updatedDeliveryOrder) {
-                    throw new NotFoundException(`Order with ID ${updatedDeliveryOrder} not found.`);
-                }
+                const updatedDeliveryOrder = await this.handelChangeStatus(orderDeliverId, deliver_status)
                 const { status, orderId } = updatedDeliveryOrder;
                 this.amqpConnection.publish('order-delivery-status-change', 'order-delivery-status-change-route', { type: 'order-status-change', data: { status, orderId } });
             }
@@ -92,5 +63,16 @@ export class OrderDeliveryStatus {
         } catch (error){
             console.error(error)
         }
+    }
+    async handelChangeStatus(orderDeliverId: any, deliver_status: any){
+        const updatedDeliveryOrder = await this.deliveryModel.findOneAndUpdate(
+            { _id: orderDeliverId },
+            { status: deliver_status },
+            { new: true } // Returns the updated document
+        )
+        if (!updatedDeliveryOrder) {
+            throw new NotFoundException(`Order with ID ${updatedDeliveryOrder} not found.`);
+        }
+        return updatedDeliveryOrder;
     }
 }

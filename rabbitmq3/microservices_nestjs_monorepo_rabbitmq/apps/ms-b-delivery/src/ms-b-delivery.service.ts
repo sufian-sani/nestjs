@@ -14,7 +14,8 @@ export class MsBDeliveryService {
   })
 
   public async checkOrderStatus(data: any) {
-    // console.log(`Received message: ${JSON.stringify(msg)}`);
-    await this.statusFromOrderService.checkStatusFromOrderService(data);
+    const {orderId} = data.data;
+    // console.log(orderId)
+    await this.statusFromOrderService.checkStatusFromOrderService(orderId);
   }
 }

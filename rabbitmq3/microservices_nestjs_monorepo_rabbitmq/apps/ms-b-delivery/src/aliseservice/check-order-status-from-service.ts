@@ -1,10 +1,13 @@
 import { AmqpConnection,RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import {Inject, Injectable, NotFoundException} from '@nestjs/common';
+import {Model} from "mongoose";
+import {Delivery} from "../interfaces/delivery.interface";
 
 @Injectable()
 export class StatusFromOrderService {
     constructor(
         private readonly amqpConnection: AmqpConnection,
+        @Inject('DELIVERY_MODEL') private deliveryModel: Model<Delivery>,
     ) {}
 
     @RabbitSubscribe({
@@ -13,12 +16,10 @@ export class StatusFromOrderService {
         queue: 'order-status-check-route-queue', // Ensure the queue name is unique for this consumer
     })
 
-    async checkStatusFromOrderService(msg: any){
-        await this.amqpConnection.publish('order-status-check', 'order-status-check-route', { type: 'order-status-check', data: { msg } });
-        // console.log(data)
-        // await this.amqpConnection.publish('stock-response-product', 'stock-product-response-route', {
-        //     type: 'check_product_stock_availability',
-        //     data // Send the stock data as the message payload
-        // });
+    async checkStatusFromOrderService(orderId: any){
+        const orderCheck = await this.deliveryModel.findOne({ orderId: orderId }).exec();
+        if (!orderCheck) {
+            this.amqpConnection.publish('order-status-check', 'order-status-check-route', { type: 'order-status-check', orderId });
+        }
     }
 }

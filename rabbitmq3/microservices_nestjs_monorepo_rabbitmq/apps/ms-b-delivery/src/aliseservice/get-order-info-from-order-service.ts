@@ -17,8 +17,12 @@ export class GetOrderInfoFromOrderService {
     async handleGetOrderInfoFromOrderService(data: any) {
         try {
             if (data.type === 'send_order_details_service') {
-                let orderData = data?.data?.data ?? data?.data
-                if(!orderData) {
+                const {status, orderId} = data.orderDetailsInfo
+                const orderData = {
+                    status,
+                    orderId
+                }
+                if(!orderId) {
                     throw new NotFoundException('Order Not Found');
                 }
                 const newDelivery = new this.deliveryModel(orderData);

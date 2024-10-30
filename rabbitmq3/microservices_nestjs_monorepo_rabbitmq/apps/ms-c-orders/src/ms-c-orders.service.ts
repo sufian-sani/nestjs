@@ -17,27 +17,20 @@ export class MsCOrdersService {
     queue: 'orders-queue',
   })
 
-  public async pubSubHandler(msg: any) {
-    switch (msg.type) {
-      case 'create_order':
-        // console.log(JSON.stringify(msg.data));
-        await this.createOrder(msg.data);
-        break;
-      default:
-        // none for now
+  public async pubSubHandler(data: any) {
+    try {
+      if (data.type === 'create_order') {
+        await this.checkItemStock(data.data);
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 
-  public async createOrder(data) {
-    await this.productStockCheck.handleStockProductMessageSend(data)
-    // return messageConfirmation
-    // console.log(stockValue)
-    // await this.amqpConnection.publish('stock', 'stock-route', {
-    //   type: 'check_stock_by_id',
-    //   data,// Send the stock data as the message payload
-    // });
-    // const messageConfirmation = await this.productStockCheck.handleStockProductGetMessage(data)
-    // console.log(messageConfirmation)
-    // return await new this.orderModel(data).save();
+  public async checkItemStock(data) {
+    this.amqpConnection.publish('stock-product', 'stock-product-route', {
+      type: 'check_stock_by_id',
+      data
+    });
   }
 }

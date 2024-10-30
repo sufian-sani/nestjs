@@ -17,23 +17,12 @@ export class StockCheckResponse {
     })
     async handleStockProductGetMessage(data: any) {
         try {
-            // Your existing logic
             if (data.type === 'check_product_stock_availability') {
-                let response, productData;
-                if (data.data.data.res !== undefined) {
-                    response = data.data.data.res;
-                    productData = data.data.data.data;
+                const { stockId, quantity } = data.infoStocks
+                const productData = {
+                    itemId: stockId,
+                    quantity
                 }
-                // Check for the second pattern
-                else if (data.data.data.data.res !== undefined) {
-                    response = data.data.data.data.res;
-                    productData = data.data.data.data.data;
-                }
-                console.log(response)
-                if (!response){
-                    throw new NotFoundException('Product Not Found');
-                }
-
                 await new this.orderModel(productData).save();
             }
         } catch (error){

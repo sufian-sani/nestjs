@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Param} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post} from '@nestjs/common';
 import { AppService } from './app.service';
 // import { v4 as uuid } from 'uuid';
 // import {EventPattern, MessagePattern} from '@nestjs/microservices';
@@ -31,17 +31,21 @@ export class AppController {
     await this.appService.createStock(stockId, quantity, name);
   }
 
-  @Get('order')
-  async createOrder() {
-    await this.appService.createOrder('ca2b39a3-b7b1-4181-a56f-905a6c11aaef', 4);
+  // order
+  @Post('order')
+  async createOrder(@Body() body: any) {
+    const { stockId, quantity } = body;
+    await this.appService.createOrder(stockId, quantity);
   }
 
+  // check delivery
   @Get('check-delivery')
-  async checkDelivery() {
-    await this.appService.checkDelivery('671f26ed97432a564c910b6c');
+  async checkDelivery(@Body() body: any) {
+    const id = body.id;
+    await this.appService.checkDelivery(id);
   }
 
-  @Get('change-delivery-status')
+  @Post('change-delivery-status')
   async changeDeliveryStatus(
       @Body('deliver_status') deliver_status: string,
       @Body('orderDeliverId') orderDeliverId: string

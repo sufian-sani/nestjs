@@ -20,25 +20,33 @@ export class OrderStatusCheck {
     async handleOrderStatusCheck(data: any) {
         try {
             if (data.type === 'order-status-check') {
-                // console.log(data)
-                const orderId = data.data.msg.data?.orderId || data.data?.msg?.data?.msg?.data?.orderId || {}
-                // console.log(orderId)
-                // console.log(data.data.msg.data)
-                // console.log(data.data.msg.data?.msg?.data)
-                // const orderId = data.data?.msg.data?.msg.data
-                // console.log(orderId)
+                let orderId: string;
+
+                // Check if orderId is directly present or wrapped inside another object
+                if (typeof data.orderId === 'string') {
+                    orderId = data.orderId; // Format 1: { type: 'order-status-check', orderId: '...' }
+                } else if (data.orderId && typeof data.orderId.orderId === 'string') {
+                    orderId = data.orderId.orderId; // Format 2: { orderId: { orderId: '...' } }
+                } else {
+                    console.error('Invalid orderId format:', data);
+                    throw new Error('Invalid orderId format received');
+                }
+
                 if (orderId) {
                     // console.log(orderId.orderId);
                     const orderDetails = await this.orderGetFromDatabase(orderId)
                     if(orderDetails) {
                         const {status, _id} = orderDetails;
                         const orderDetailsInfo = {status, orderId: _id.toString()}
-                        this.sendOrderDetailsService.handlerSendOrderDetailsService(orderDetailsInfo)
+                        this.amqpConnection.publish('send-order-detail-service', 'send-order-detail-service-route', {
+                            type: 'send_order_details_service',
+                            orderDetailsInfo // Send the stock data as the message payload
+                        });
                     }
                 }
             }
         } catch (error){
-            console.error('-----------------------------------------',error)
+            console.error(error)
         }
     }
     public async orderGetFromDatabase(orderId: string): Promise<Order> {

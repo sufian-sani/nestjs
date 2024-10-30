@@ -6,23 +6,23 @@ import {Order} from "../interfaces/order.interface";
 @Injectable()
 export class StockCheckByServiceService {
     constructor(
-        private readonly amqpConnection: AmqpConnection,
+        // private readonly amqpConnection: AmqpConnection,
     ) {}
 
-    @RabbitSubscribe({
-        exchange: 'stock-product',
-        routingKey: 'stock-product-route',
-        queue: 'stock-product-queue', // Ensure the queue name is unique for this consumer
-        allowNonJsonMessages: false,
-    })
+    // @RabbitSubscribe({
+    //     exchange: 'stock-product',
+    //     routingKey: 'stock-product-route',
+    //     queue: 'stock-product-queue', // Ensure the queue name is unique for this consumer
+    //     allowNonJsonMessages: false,
+    // })
     async handleStockProductMessageSend(data: any) {
         try {
-            // console.log('msg',msg)
-            this.amqpConnection.publish('stock-product', 'stock-product-route', {
-                type: 'check_stock_by_id',
-                data
-            });
-            data=null;
+            console.log('data',data)
+            // this.amqpConnection.publish('stock-product', 'stock-product-route', {
+            //     type: 'check_stock_by_id',
+            //     data
+            // });
+            // data=null;
             // console.log('Message cleared:', data);
         } catch(error) {
             console.error('Error:', error);

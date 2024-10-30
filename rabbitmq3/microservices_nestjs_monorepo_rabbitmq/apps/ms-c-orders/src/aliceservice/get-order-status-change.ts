@@ -51,47 +51,11 @@ export class OrderStatusChange {
                     }
                 } else {
                     console.log("update isn't possible")
-                    // const updatedOrder = await this.orderModel.findOneAndUpdate(
-                    //     {_id: orderId},
-                    //     { status: status },
-                    //     { new: true, useFindAndModify: false } // Returns the updated document
-                    // ).exec();
-                    // if (!updatedOrder) {
-                    //     throw new NotFoundException(`Order with ID ${orderId} not found.`);
-                    // }
                 }
             }
         } catch (error){
             console.error(error)
         }
     }
-    // async handelCheckOrderDeliveryCondition(orderDeliverId: any, deliver_status: any){
-    //     try {
-    //         const orderDeliver = await this.deliveryModel.findOne({ _id: orderDeliverId }).exec();
-    //         if (!orderDeliver) {
-    //             throw new NotFoundException(`Order Deliver with ID ${orderDeliverId} not found.`);
-    //         }
-    //         if (orderDeliver.status === deliver_status) {
-    //             return 'delivery status already exsist'
-    //         }
-    //         if(deliver_status==='inprocess'){
-    //             await this.deliveryModel.findByIdAndUpdate(
-    //                 orderDeliverId,
-    //                 { status: deliver_status },
-    //                 { new: true } // Returns the updated document
-    //             )
-    //             this.amqpConnection.publish('order-delivery-status-change', 'order-delivery-status-change-route', { type: 'order-delivery-status-change-status', data: { deliver_status } });
-    //             // await orderDeliver.save();
-    //         } else if(deliver_status==='pending'){
-    //             await this.deliveryModel.findByIdAndUpdate(
-    //                 orderDeliverId,
-    //                 { status: deliver_status },
-    //                 { new: true } // Returns the updated document
-    //             )
-    //         }
-    //         return true
-    //     } catch (error){
-    //         console.error(error)
-    //     }
-    // }
+
 }

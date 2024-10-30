@@ -22,11 +22,13 @@ export class AppService {
     });
   }
 
+  // create order
   async createOrder(itemId, quantity) {
     await this.amqpConnection.publish('orders', 'orders-route', { type: 'create_order', data: { itemId, quantity } });
     console.log('msg published', 'orders', 'orders-route', { data: { itemId, quantity } });
   }
 
+  // check delivery
   async checkDelivery(orderId) {
     await this.amqpConnection.publish('delivery', 'delivery-route', { data: { orderId } });
     console.log('msg published', 'delivery', 'delivery-route', { data: { orderId } });
