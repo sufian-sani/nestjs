@@ -1,7 +1,6 @@
 import { AmqpConnection, RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import {Inject, Injectable} from '@nestjs/common';
 import {Model} from "mongoose";
-import {Order} from "../interfaces/order.interface";
 
 @Injectable()
 export class StockCheckByServiceService {

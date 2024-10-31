@@ -1,14 +1,18 @@
 import { AmqpConnection, RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import {HttpException, Inject, Injectable, NotFoundException} from '@nestjs/common';
-import {Model} from "mongoose";
-import {Order} from "../interfaces/order.interface";
+import { Order } from '../schemas/order.entity';
+import {DataSource, Repository} from "typeorm";
+
 
 @Injectable()
 export class StockCheckResponse {
+    private orderRepository: Repository<Order>;
     constructor(
-        @Inject('ORDER_MODEL') private orderModel: Model<Order>,
+        @Inject('DATA_SOURCE') private dataSource: DataSource,
         private readonly amqpConnection: AmqpConnection,
-    ) {}
+    ) {
+        this.orderRepository = this.dataSource.getRepository(Order);
+    }
 
     @RabbitSubscribe({
         exchange: 'stock-response-product',
@@ -18,12 +22,14 @@ export class StockCheckResponse {
     async handleStockProductGetMessage(data: any) {
         try {
             if (data.type === 'check_product_stock_availability') {
-                const { stockId, quantity } = data.infoStocks
+                const { stockId, quantity } = data.infoStock
                 const productData = {
                     itemId: stockId,
                     quantity
                 }
-                await new this.orderModel(productData).save();
+                const newOrder = this.orderRepository.create(productData);
+                await this.orderRepository.save(newOrder);
+                // await new this.orderModel(productData).save();
             }
         } catch (error){
             console.error(error)

@@ -1,15 +1,18 @@
 import { AmqpConnection,RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import {Inject, Injectable, NotFoundException} from '@nestjs/common';
-import {Model} from "mongoose";
-import {Stock} from "../interfaces/stock.interface";
+import { Stock } from '../schemas/stock.entity';
+import {DataSource, Repository} from "typeorm";
 // import {StockConfirmationMessageService} from "./stock-confirmation-message";
 
 @Injectable()
 export class StockBackService {
+    private stockRepository: Repository<Stock>;
     constructor(
-        @Inject('STOCK_MODEL') private stockModel: Model<Stock>,
+        @Inject('DATA_SOURCE') private dataSource: DataSource,
         private readonly amqpConnection: AmqpConnection,
-    ) {}
+    ) {
+        this.stockRepository = this.dataSource.getRepository(Stock);
+    }
 
     @RabbitSubscribe({
         exchange: 'order-cancel-stock-back',
@@ -17,18 +20,17 @@ export class StockBackService {
         queue: 'order-cancel-stock-back-route-queue', // Ensure the queue name is unique for this consumer
     })
     async handleStockBackService(data: any) {
-        // console.log('Received stock message:', msg.type);
-
-        // Check the message type and process accordingly
         try {
             if (data.type === 'order-cancel-stock-back-type') {
                 const { itemId,quantity } = data.data
-                console.log(typeof itemId, typeof quantity)
-                const stock = await this.stockModel.findOneAndUpdate(
-                    { stockId:itemId, quantity: { $gte: quantity } }, // Ensure enough quantity is available
-                    { $inc: { quantity: +quantity } }, // Decrement quantity
-                    { new: true, useFindAndModify: false } // Return the updated stock document
-                ).exec();
+                const stock = await this.stockRepository
+                    .createQueryBuilder()
+                    .update(Stock)
+                    .set({ quantity: () => `quantity + ${quantity}` })
+                    .where("stockId = :itemId AND quantity >= 0", { itemId, quantity })
+                    .returning("*")
+                    .execute();
+                // const updatedStock = stock.raw[0];
             }
         } catch (e) {
             console.error(e)

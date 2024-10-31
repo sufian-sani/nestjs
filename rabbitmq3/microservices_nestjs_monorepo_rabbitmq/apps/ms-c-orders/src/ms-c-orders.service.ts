@@ -1,16 +1,21 @@
 import {AmqpConnection, RabbitSubscribe} from '@golevelup/nestjs-rabbitmq';
 import {Inject, Injectable} from '@nestjs/common';
-import {Model} from "mongoose";
-import {Order} from "./interfaces/order.interface";
-import {StockCheckByServiceService} from "./aliceservice/productstock-check.service";
+// import {Model} from "mongoose";
+// import {Order} from "./interfaces/order.interface";
+import { Order } from './schemas/order.entity';
+// import {StockCheckByServiceService} from "./aliceservice/productstock-check.service";
+import {DataSource, Repository} from "typeorm";
 
 @Injectable()
 export class MsCOrdersService {
+  private orderRepository: Repository<Order>;
   constructor(
-      @Inject('ORDER_MODEL') private orderModel: Model<Order>,
+      @Inject('DATA_SOURCE') private dataSource: DataSource,
       private readonly amqpConnection: AmqpConnection,
-      private productStockCheck: StockCheckByServiceService
-  ) {}
+      // private productStockCheck: StockCheckByServiceService
+  ) {
+    this.orderRepository = this.dataSource.getRepository(Order);
+  }
   @RabbitSubscribe({
     exchange: 'orders',
     routingKey: 'orders-route',

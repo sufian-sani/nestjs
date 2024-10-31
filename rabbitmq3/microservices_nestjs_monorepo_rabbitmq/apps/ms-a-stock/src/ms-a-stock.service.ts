@@ -1,14 +1,19 @@
 import { RabbitSubscribe, AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { Inject, Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
-import { Stock } from './interfaces/stock.interface';
+import { Repository, DataSource } from 'typeorm';
+// import { Model } from 'mongoose';
+import { Stock } from './schemas/stock.entity';
+import {InjectRepository} from "@nestjs/typeorm";
 
 @Injectable()
 export class MsAStockService {
+  private stockRepository: Repository<Stock>;
   constructor(
-    @Inject('STOCK_MODEL') private stockModel: Model<Stock>,
-    private readonly amqpConnection: AmqpConnection,
-  ) {}
+      @Inject('DATA_SOURCE') private dataSource: DataSource,
+      private readonly amqpConnection: AmqpConnection,
+  ) {
+    this.stockRepository = this.dataSource.getRepository(Stock);
+  }
 
   @RabbitSubscribe({
     exchange: 'stock',
@@ -22,37 +27,17 @@ export class MsAStockService {
     } catch (error) {
       console.error(error);
     }
-    // if (data.type === 'create_stock') {
-      // console.log(data.data)
-      //   await this.createStock(data.data)
-      // case 'check_stock':
-      //   const stocks = await this.checkStock();
-      //   await this.amqpConnection.publish('stock', 'stock-route', {
-      //     type: 'check_stock',
-      //     stocks, // Send the stock data as the message payload
-      //   });
-      //   break;
-      // default:
-      // none for now
-
-    // console.log(`Received message: ${JSON.stringify(msg)}`);
   }
 
-  public async createStock(data) {
+  public async createStock(data){
     try {
-      await new this.stockModel(data).save();
+      const newStock = this.stockRepository.create(data);
+      console.log(newStock);
+      return await this.stockRepository.save(newStock);
     } catch (error) {
       console.error(error);
+      throw error;
     }
-    // return await new this.stockModel(data).save();
   }
 
-  // public async checkStock(): Promise<Stock[]> {
-  //   try {
-  //     return await this.stockModel.find().exec(); // Fetch all stocks from the database
-  //   } catch (error) {
-  //     console.error('Error fetching stocks:', error);
-  //     throw error; // Rethrow or handle error as needed
-  //   }
-  // }
 }

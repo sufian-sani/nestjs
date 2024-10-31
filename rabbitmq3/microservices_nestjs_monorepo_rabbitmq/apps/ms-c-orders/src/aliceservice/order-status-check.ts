@@ -1,16 +1,19 @@
 import { AmqpConnection, RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import {HttpException, Inject, Injectable, NotFoundException} from '@nestjs/common';
-import {Model} from "mongoose";
-import {Order} from "../interfaces/order.interface";
-import {SendOrderDetailsService} from "./send-order-details-service";
+import { Order } from '../schemas/order.entity';
+import {DataSource, Repository} from "typeorm";
+// import {SendOrderDetailsService} from "./send-order-details-service";
 
 @Injectable()
 export class OrderStatusCheck {
+    private orderRepository: Repository<Order>;
     constructor(
-        @Inject('ORDER_MODEL') private orderModel: Model<Order>,
+        @Inject('DATA_SOURCE') private dataSource: DataSource,
         private readonly amqpConnection: AmqpConnection,
-        private sendOrderDetailsService: SendOrderDetailsService
-    ) {}
+        // private sendOrderDetailsService: SendOrderDetailsService
+    ) {
+        this.orderRepository = this.dataSource.getRepository(Order);
+    }
 
     @RabbitSubscribe({
         exchange: 'order-status-check',
@@ -33,11 +36,10 @@ export class OrderStatusCheck {
                 }
 
                 if (orderId) {
-                    // console.log(orderId.orderId);
                     const orderDetails = await this.orderGetFromDatabase(orderId)
                     if(orderDetails) {
-                        const {status, _id} = orderDetails;
-                        const orderDetailsInfo = {status, orderId: _id.toString()}
+                        const {status, id} = orderDetails;
+                        const orderDetailsInfo = {status, orderId: id}
                         this.amqpConnection.publish('send-order-detail-service', 'send-order-detail-service-route', {
                             type: 'send_order_details_service',
                             orderDetailsInfo // Send the stock data as the message payload
@@ -51,7 +53,7 @@ export class OrderStatusCheck {
     }
     public async orderGetFromDatabase(orderId: string): Promise<Order> {
         try {
-            const order = await this.orderModel.findOne({ _id: orderId }).exec();
+            const order = await this.orderRepository.findOne({ where: { id: orderId } });
             if (!order) {
                 throw new NotFoundException(`Order with ID ${orderId} not found.`);
             }

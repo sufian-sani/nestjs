@@ -1,13 +1,16 @@
 import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import {Inject, Injectable, NotFoundException} from '@nestjs/common';
-import {Model} from "mongoose";
-import {Delivery} from "../interfaces/delivery.interface";
+import { Deliver } from "../schemas/delivery.entity";
+import {DataSource, Repository} from "typeorm";
 
 @Injectable()
 export class GetOrderInfoFromOrderService {
+    private deliverRepository: Repository<Deliver>;
     constructor(
-        @Inject('DELIVERY_MODEL') private deliveryModel: Model<Delivery>,
-    ) {}
+        @Inject('DATA_SOURCE') private dataSource: DataSource,
+    ) {
+        this.deliverRepository = this.dataSource.getRepository(Deliver);
+    }
 
     @RabbitSubscribe({
         exchange: 'send-order-detail-service',
@@ -25,8 +28,8 @@ export class GetOrderInfoFromOrderService {
                 if(!orderId) {
                     throw new NotFoundException('Order Not Found');
                 }
-                const newDelivery = new this.deliveryModel(orderData);
-                await newDelivery.save()
+                const newDelivery = this.deliverRepository.create(orderData);
+                await this.deliverRepository.save(newDelivery);
             }
         } catch (error) {
             console.error(error)

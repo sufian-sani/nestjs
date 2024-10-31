@@ -1,15 +1,18 @@
 import { AmqpConnection, RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import {HttpException, Inject, Injectable, NotFoundException} from '@nestjs/common';
-import {Model} from "mongoose";
-import {Delivery} from "../interfaces/delivery.interface";
+import { Deliver } from "../schemas/delivery.entity";
+import {DataSource, Repository} from "typeorm";
 
 @Injectable()
 export class OrderDeliveryStatus {
+    private deliverRepository: Repository<Deliver>;
     constructor(
-        @Inject('DELIVERY_MODEL') private deliveryModel: Model<Delivery>,
+        @Inject('DATA_SOURCE') private dataSource: DataSource,
         private readonly amqpConnection: AmqpConnection,
         // private sendOrderDetailsService: SendOrderDetailsService
-    ) {}
+    ) {
+        this.deliverRepository = this.dataSource.getRepository(Deliver);
+    }
 
     @RabbitSubscribe({
         exchange: 'order-delivery',
@@ -24,15 +27,15 @@ export class OrderDeliveryStatus {
                     orderDeliverId,
                     deliver_status
                 )
-                console.log('message send to order service:', checkOrderDeliveryCondition)
+                console.log('checkOrderDeliveryCondition', checkOrderDeliveryCondition);
             }
         } catch (error){
-            console.error('-----------------------------------------',error)
+            console.error(error)
         }
     }
     async handelCheckOrderDeliveryCondition(orderDeliverId: any, deliver_status: any){
         try {
-            const orderDeliver = await this.deliveryModel.findOne({ _id: orderDeliverId }).exec();
+            const orderDeliver = await this.deliverRepository.findOne({ where: { id: orderDeliverId } });
             if (!orderDeliver) {
                 throw new NotFoundException(`Order Deliver with ID ${orderDeliverId} not found.`);
             }
@@ -65,14 +68,16 @@ export class OrderDeliveryStatus {
         }
     }
     async handelChangeStatus(orderDeliverId: any, deliver_status: any){
-        const updatedDeliveryOrder = await this.deliveryModel.findOneAndUpdate(
-            { _id: orderDeliverId },
-            { status: deliver_status },
-            { new: true } // Returns the updated document
-        )
-        if (!updatedDeliveryOrder) {
-            throw new NotFoundException(`Order with ID ${updatedDeliveryOrder} not found.`);
+        const updatedDeliveryOrder = await this.deliverRepository.createQueryBuilder()
+            .update(Deliver) // Replace with your entity name
+            .set({ status: deliver_status })
+            .where("id = :orderDeliverId", { orderDeliverId })
+            .returning("*") // Returns the updated document
+            .execute();
+        const updatedOrder = updatedDeliveryOrder.raw[0];
+        if (!updatedOrder) {
+            throw new NotFoundException(`Order with ID ${orderDeliverId} not found.`);
         }
-        return updatedDeliveryOrder;
+        return updatedOrder;
     }
 }

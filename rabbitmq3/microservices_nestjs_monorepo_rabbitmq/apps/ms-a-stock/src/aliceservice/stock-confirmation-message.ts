@@ -1,7 +1,6 @@
 import { AmqpConnection,RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import {Inject, Injectable, NotFoundException} from '@nestjs/common';
 import {Model} from "mongoose";
-import {Stock} from "../interfaces/stock.interface";
 
 @Injectable()
 export class StockConfirmationMessageService {
