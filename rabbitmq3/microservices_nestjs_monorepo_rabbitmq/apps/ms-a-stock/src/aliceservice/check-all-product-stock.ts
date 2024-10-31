@@ -34,7 +34,7 @@ export class AllStockCheck {
     public async checkStock(){
       try {
           const newStock = await this.stockRepository.find();
-          console.log(newStock);
+          return newStock;
       } catch (error) {
         console.error('Error fetching stocks:', error);
         throw error; // Rethrow or handle error as needed

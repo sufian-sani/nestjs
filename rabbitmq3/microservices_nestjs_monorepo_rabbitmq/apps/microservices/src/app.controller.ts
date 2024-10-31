@@ -17,7 +17,7 @@ export class AppController {
     await this.appService.checkStock();
     await new Promise(resolve => setTimeout(resolve, 100));
     const allData = await this.allStockCheckService.getStockData()
-    // console.log(all_data)
+    console.log('allData', allData)
     return {
       status: 'success',
       data: allData,
