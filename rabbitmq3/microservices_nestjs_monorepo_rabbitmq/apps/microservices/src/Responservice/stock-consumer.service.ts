@@ -1,11 +1,12 @@
-import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
+import {RabbitRPC, RabbitSubscribe} from '@golevelup/nestjs-rabbitmq';
 import { Injectable } from '@nestjs/common';
+import {response} from "express";
 
 @Injectable()
 export class AllStockCheckService {
     private stockData: any = null;
 
-    @RabbitSubscribe({
+    @RabbitRPC({
         exchange: 'all-stock-response',
         routingKey: 'all-stock-response-route',
         queue: 'all-stock-response-route-queue', // Ensure the queue name is unique for this consumer
