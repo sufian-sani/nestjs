@@ -4,7 +4,7 @@ import {
     Max, IsNumber, IsLongitude, IsLatitude
 } from 'class-validator';
 
-export class CreateUserDto {
+export class CreateReportDtoDto {
     @IsNumber()
     @Min(0)
     @Max(1000000)
