@@ -13,7 +13,7 @@ export class ReportsService {
     create(reportDto: CreateReportDtoDto, user: User) {
         const report = this.repo.create(reportDto);
         report.user = user;
-        console.log(user)
+        // console.log(user)
         return this.repo.save(report);
     }
     async changeApproval(id: string, approved: boolean) {
