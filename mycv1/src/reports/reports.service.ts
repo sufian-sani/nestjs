@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import {Report} from "./report.entity";
 import {CreateUserDto} from "./dto/create-report.dto";
 import {User} from "../users/user.entity";
+import {request} from "express";
 
 
 @Injectable()
@@ -12,6 +13,7 @@ export class ReportsService {
     create(reportDto: CreateUserDto, user: User) {
         const report = this.repo.create(reportDto);
         report.user = user;
+        console.log(user)
         return this.repo.save(report);
     }
     async changeApproval(id: string, approved: boolean) {
