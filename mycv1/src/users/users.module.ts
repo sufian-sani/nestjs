@@ -1,11 +1,11 @@
-import { Module,MiddlewareConsumer } from '@nestjs/common';
+import { Module, MiddlewareConsumer } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { User } from './user.entity';
 import {AuthService} from "./auth.service";
-import {APP_INTERCEPTOR} from "@nestjs/core";
-import {CurrentUserInterceptor} from "./interceptors/current-user.interceptor";
+// import {APP_INTERCEPTOR} from "@nestjs/core";
+// import {CurrentUserInterceptor} from "./interceptors/current-user.interceptor";
 import {CurrentUserMiddleware} from "./middlewares/current-user.middleware";
 
 @Module({
@@ -14,10 +14,10 @@ import {CurrentUserMiddleware} from "./middlewares/current-user.middleware";
   providers: [
       UsersService,
       AuthService,
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: CurrentUserInterceptor
-    }
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: CurrentUserInterceptor
+    // }
   ],
 })
 export class UsersModule {
