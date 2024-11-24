@@ -38,10 +38,11 @@
 // -------------------------
 
 
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import {Controller, Get, Post, Body, HttpStatus, HttpException, BadRequestException} from '@nestjs/common';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { CatsService } from './cats.service';
 import { Cat } from './interfaces/cat.interface';
+import {ForbiddenException} from "../../common/custom-error/forbidden.exception";
 
 @Controller('cats')
 export class CatsController {
@@ -52,8 +53,31 @@ export class CatsController {
     this.catsService.create(createCatDto);
   }
 
+  // @Get()
+  // async findAll(): Promise<Cat[]> {
+  //   return this.catsService.findAll();
+  // }
+
+  // @Get()
+  // async findAll() {
+  //   try {
+  //     await this.catsService.findAll()
+  //   } catch (error) {
+  //     throw new HttpException({
+  //       status: HttpStatus.FORBIDDEN,
+  //       error: 'This is a custom message',
+  //     }, HttpStatus.FORBIDDEN, {
+  //       cause: error
+  //     });
+  //   }
+  // }
+
   @Get()
-  async findAll(): Promise<Cat[]> {
-    return this.catsService.findAll();
+  async findAll() {
+    // throw new ForbiddenException();
+    throw new BadRequestException('Something bad happened', {
+      cause: new Error(),
+      description: 'Some error description',
+    });
   }
 }
